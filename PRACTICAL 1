@@ -1,0 +1,30 @@
+I = imread('input image.jpg'); ​
+if size(I,3) == 3​
+I = rgb2gray(I);​
+end​
+I = im2double(I);​
+t = tiledlayout(2,4,'Padding','compact','TileSpacing','compact');​
+nexttile; imshow(I); title('Original');​
+I_neg = 1 - I;​
+nexttile; imshow(I_neg); title('Negative');​
+c_log = 1;​
+I_log = c_log * log(1 + I);​
+I_log = mat2gray(I_log);​
+nexttile; imshow(I_log); title('Log Transform');​
+gamma = 0.5;​
+c_gamma = 1;​
+I_gamma = c_gamma * (I .^ gamma);​
+I_gamma = mat2gray(I_gamma);​
+nexttile; imshow(I_gamma); title(['Power-law (\gamma=' num2str(gamma) ')']);​
+r1 = 0.3; s1 = 0;​
+r2 = 0.7; s2 = 1;​
+I_stretch = I;​
+idx1 = I <= r1;​
+idx2 = I > r1 & I <= r2;​
+idx3 = I > r2;​
+I_stretch(idx1) = (s1 / r1) * I(idx1);​
+I_stretch(idx2) = ((s2 - s1) / (r2 - r1)) * (I(idx2) - r1) + s1;​
+I_stretch(idx3) = ((1 - s2) / (1 - r2)) * (I(idx3) - r2) + s2;​
+I_stretch = mat2gray(I_stretch);​
+nexttile; imshow(I_stretch); title('Piecewise Linear Stretching');​
+​
