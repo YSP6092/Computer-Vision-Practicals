@@ -1,0 +1,27 @@
+fname = 'input2.image.jpg';
+if exist(fname,'file') ~= 2
+    error('File not found: %s', fname)
+end
+Iu = imread(fname);
+if size(Iu,3) == 3
+    Iu = rgb2gray(Iu);
+end
+I = im2double(Iu);
+sigma = 1.2;
+if exist('imgaussfilt','file') == 2
+    I_blur = imgaussfilt(I, sigma);
+else
+    
+    sz = 2*ceil(3*sigma) + 1;          
+    half = (sz-1)/2;
+    [x,y] = meshgrid(-half:half, -half:half);
+    h = exp(-(x.^2 + y.^2)/(2*sigma^2));
+    h = h / sum(h(:));
+    I_blur = conv2(I, h, 'same');
+end
+I_blur = max(0, min(1, I_blur));
+figure('Name','Original vs Slightly Blurred','NumberTitle','off');
+subplot(1,2,1);
+imshow(I); title('Original (grayscale)');
+subplot(1,2,2);
+imshow(I_blur); title(sprintf('Slight Blur, \\sigma=%.1f', sigma));
