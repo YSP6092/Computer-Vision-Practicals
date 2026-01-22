@@ -1,0 +1,37 @@
+
+imagePath = 'jaguar.jpg';   % Update with your image path
+img = imread(imagePath);
+
+if isempty(img)
+    error('Image not found. Make sure you uploaded the image and the path is correct.');
+end
+
+
+if size(img,3) == 3
+    imgRGB = img;
+    grayImg = rgb2gray(img);
+else
+    imgRGB = cat(3, img, img, img); % replicate grayscale to RGB
+    grayImg = img;
+end
+
+cellSize = [8 8];
+hogFeatureSize = [];
+[features, visualization] = extractHOGFeatures(grayImg, ...
+    'CellSize', cellSize, ...
+    'BlockSize', [2 2], ...
+    'NumBins', 9);
+
+
+figure;
+subplot(1,2,1);
+imshow(imgRGB);
+title('Original Image');
+
+subplot(1,2,2);
+plot(visualization);
+title('HOG Feature Visualization');
+
+
+fprintf('HOG feature vector length: %d\n', length(features));
+
